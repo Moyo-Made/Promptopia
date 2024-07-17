@@ -12,8 +12,8 @@ const EditPrompt = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const query = router.query;
-    const promptId = query.id;
+    const query = new URLSearchParams(window.location.search);
+    const promptId = query.get("id");
 
     if (!promptId) {
       setError("No prompt ID provided.");
@@ -40,14 +40,14 @@ const EditPrompt = () => {
     };
 
     getPromptDetails();
-  }, [router.query]);
+  }, []);
 
   const updatePrompt = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const query = router.query;
-    const promptId = query.id;
+    const query = new URLSearchParams(window.location.search);
+    const promptId = query.get("id");
 
     if (!promptId) {
       alert("Missing PromptId!");
