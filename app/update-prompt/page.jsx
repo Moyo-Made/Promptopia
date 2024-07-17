@@ -5,87 +5,98 @@ import { useRouter } from "next/navigation";
 import Form from "@components/Form";
 
 const EditPrompt = () => {
-	const router = useRouter();
-	const [submitting, setSubmitting] = useState(false);
-	const [post, setPost] = useState({
-		prompt: "",
-		tag: "",
-	});
-	const [promptId, setPromptId] = useState(null);
+  const router = useRouter();
+  const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [submitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-	useEffect(() => {
-		if (router.isReady) {
-			const query = router.query;
-			const id = query.id;
-			setPromptId(id);
-		}
-	}, [router.isReady, router.query]);
+  useEffect(() => {
+    const query = router.query;
+    const promptId = query.id;
 
-	useEffect(() => {
-		const getPromptDetails = async () => {
-			if (!promptId) return;
+    if (!promptId) {
+      setError("No prompt ID provided.");
+      setLoading(false);
+      return;
+    }
 
-			try {
-				const res = await fetch(`/api/prompt/${promptId}`);
-				if (!res.ok) throw new Error("Failed to fetch prompt details");
+    const getPromptDetails = async () => {
+      try {
+        const response = await fetch(`/api/prompt/${promptId}`);
+        if (!response.ok) throw new Error("Failed to fetch prompt details");
 
-				const data = await res.json();
-				setPost({
-					prompt: data.prompt,
-					tag: data.tag,
-				});
-			} catch (error) {
-				console.error("Error fetching prompt details:", error);
-				setError("Failed to load prompt details.");
-			} 
-		};
+        const data = await response.json();
+        setPost({
+          prompt: data.prompt,
+          tag: data.tag,
+        });
+      } catch (error) {
+        console.error("Error fetching prompt details:", error);
+        setError("Failed to load prompt details.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-		getPromptDetails();
-	}, [promptId]);
+    getPromptDetails();
+  }, [router.query]);
 
-	const updatePrompt = async (e) => {
-		e.preventDefault();
-		setSubmitting(true);
+  const updatePrompt = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-		if (!promptId) {
-			alert("Prompt ID is not found");
-			return setSubmitting(false);
-		}
+    const query = router.query;
+    const promptId = query.id;
 
-		try {
-			const response = await fetch(`/api/prompt/${promptId}`, {
-				method: "PATCH",
-				body: JSON.stringify({
-					prompt: post.prompt,
-					tag: post.tag,
-				}),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
+    if (!promptId) {
+      alert("Missing PromptId!");
+      setIsSubmitting(false);
+      return;
+    }
 
-			if (response.ok) {
-				router.push("/");
-			} else {
-				const errorData = await response.json();
-				alert(`Failed to update prompt: ${errorData.message}`);
-			}
-		} catch (error) {
-			console.error("Error updating prompt:", error);
-		} finally {
-			setSubmitting(false);
-		}
-	};
+    try {
+      const response = await fetch(`/api/prompt/${promptId}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          prompt: post.prompt,
+          tag: post.tag,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-	return (
-		<Form
-			type="Edit"
-			post={post}
-			setPost={setPost}
-			submitting={submitting}
-			handleSubmit={updatePrompt}
-		/>
-	);
+      if (response.ok) {
+        router.push("/");
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to update prompt: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error updating prompt:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return (
+    <Form
+      type="Edit"
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={updatePrompt}
+    />
+  );
 };
 
 export default EditPrompt;
