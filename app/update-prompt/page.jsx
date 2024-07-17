@@ -25,7 +25,7 @@ const EditPrompt = () => {
 	useEffect(() => {
 		const getPromptDetails = async () => {
 			if (!promptId) return;
-			
+
 			try {
 				const res = await fetch(`/api/prompt/${promptId}`);
 				if (!res.ok) throw new Error("Failed to fetch prompt details");
@@ -60,8 +60,8 @@ const EditPrompt = () => {
 					tag: post.tag,
 				}),
 				headers: {
-					'Content-Type': 'application/json'
-				}
+					"Content-Type": "application/json",
+				},
 			});
 
 			if (response.ok) {
@@ -76,6 +76,11 @@ const EditPrompt = () => {
 			setSubmitting(false);
 		}
 	};
+
+	if (!post.prompt && !post.tag) {
+		// Show a loading indicator or a message while fetching data
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<Form
