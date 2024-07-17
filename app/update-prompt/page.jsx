@@ -1,25 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router"; // Use from 'next/router' instead of 'next/navigation'
 
 import Form from "@components/Form";
 
 const EditPrompt = () => {
 	const router = useRouter();
-	const { query } = router;
-	const promptId = query.id;
-
 	const [submitting, setSubmitting] = useState(false);
 	const [post, setPost] = useState({
 		prompt: "",
 		tag: "",
 	});
+	const [promptId, setPromptId] = useState(null);
+
+	useEffect(() => {
+		if (router.isReady) {
+			const query = router.query;
+			const id = query.id;
+			setPromptId(id);
+		}
+	}, [router.isReady, router.query]);
 
 	useEffect(() => {
 		const getPromptDetails = async () => {
 			if (!promptId) return;
-
+			
 			try {
 				const res = await fetch(`/api/prompt/${promptId}`);
 				if (!res.ok) throw new Error("Failed to fetch prompt details");
@@ -54,8 +60,8 @@ const EditPrompt = () => {
 					tag: post.tag,
 				}),
 				headers: {
-					"Content-Type": "application/json",
-				},
+					'Content-Type': 'application/json'
+				}
 			});
 
 			if (response.ok) {
