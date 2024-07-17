@@ -5,7 +5,7 @@ const UpdatePromptPage = async ({ searchParams }) => {
   const promptId = searchParams.id;
 
   const fetchPromptDetails = async (id) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/prompt/${id}`);
+    const response = await fetch(`/api/prompt/${promptId}`);
     const data = await response.json();
     return data;
   };
