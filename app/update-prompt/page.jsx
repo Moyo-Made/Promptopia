@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import Form from "@components/Form";
 
 const EditPrompt = () => {
 	const router = useRouter();
-	const searchParams = useSearchParams();
-	const promptId = searchParams.get("id");
+	const { query } = router;
+	const promptId = query.id;
 
 	const [submitting, setSubmitting] = useState(false);
 	const [post, setPost] = useState({
@@ -18,18 +18,23 @@ const EditPrompt = () => {
 
 	useEffect(() => {
 		const getPromptDetails = async () => {
-			const res = await fetch(`/api/prompt/${promptId}`);
-			const data = await res.json();
+			if (!promptId) return;
 
-			setPost({
-				prompt: data.prompt,
-				tag: data.tag,
-			});
+			try {
+				const res = await fetch(`/api/prompt/${promptId}`);
+				if (!res.ok) throw new Error("Failed to fetch prompt details");
+
+				const data = await res.json();
+				setPost({
+					prompt: data.prompt,
+					tag: data.tag,
+				});
+			} catch (error) {
+				console.error("Error fetching prompt details:", error);
+			}
 		};
 
-		if (promptId) {
-			getPromptDetails();
-		}
+		getPromptDetails();
 	}, [promptId]);
 
 	const updatePrompt = async (e) => {
@@ -37,7 +42,8 @@ const EditPrompt = () => {
 		setSubmitting(true);
 
 		if (!promptId) {
-			return alert("Prompt ID is not found");
+			alert("Prompt ID is not found");
+			return setSubmitting(false);
 		}
 
 		try {
@@ -47,13 +53,19 @@ const EditPrompt = () => {
 					prompt: post.prompt,
 					tag: post.tag,
 				}),
+				headers: {
+					"Content-Type": "application/json",
+				},
 			});
 
 			if (response.ok) {
 				router.push("/");
+			} else {
+				const errorData = await response.json();
+				alert(`Failed to update prompt: ${errorData.message}`);
 			}
 		} catch (error) {
-			console.log(error);
+			console.error("Error updating prompt:", error);
 		} finally {
 			setSubmitting(false);
 		}
