@@ -37,7 +37,7 @@ const EditPrompt = () => {
 			} catch (error) {
 				console.error("Error fetching prompt details:", error);
 				setError("Failed to load prompt details.");
-			}
+			} 
 		};
 
 		getPromptDetails();
