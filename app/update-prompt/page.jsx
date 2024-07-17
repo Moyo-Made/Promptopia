@@ -77,11 +77,6 @@ const EditPrompt = () => {
 		}
 	};
 
-	if (!post.prompt && !post.tag) {
-		// Show a loading indicator or a message while fetching data
-		return <div>Loading...</div>;
-	}
-
 	return (
 		<Form
 			type="Edit"
