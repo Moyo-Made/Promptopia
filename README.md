@@ -1,6 +1,8 @@
 # Promptopia
 
-Promptopia is a platform where users can create, read, update, and delete prompts for AI. Whether you're brainstorming new ideas or sharing interesting prompts, Promptopia is the perfect place for AI enthusiasts to interact and collaborate.
+![Promptopia Homepage](./public/assets/images/promptopia.PNG)
+
+**Promptopia** is a platform where users can create, read, update, and delete prompts for AI. Whether you're brainstorming new ideas or sharing interesting prompts, Promptopia is the perfect place for AI enthusiasts to interact and collaborate.
 
 
 ## Getting Started
