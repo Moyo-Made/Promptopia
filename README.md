@@ -1,8 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Promptopia
+
+Promptopia is a platform where users can create, read, update, and delete prompts for AI. Whether you're brainstorming new ideas or sharing interesting prompts, Promptopia is the perfect place for AI enthusiasts to interact and collaborate.
+
 
 ## Getting Started
 
-First, run the development server:
+To run Promptopia on your local machine, follow these steps:
+
+## Clone the repository:
+
+git clone https://github.com/Moyo-Made/Promptopia.git
+
+cd promptopia
+
+## Run the development server:
 
 ```bash
 npm run dev
@@ -15,6 +26,10 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Live Demo
+
+Check out the live version of Promptopia here. https://promptopia-peach-one.vercel.app/
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
